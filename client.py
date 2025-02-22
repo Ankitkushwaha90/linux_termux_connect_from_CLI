@@ -2,7 +2,7 @@
 import socket
 
 # Server configuration
-SERVER_IP = '192.168.1.100'  # Replace with the IP address of the Linux laptop
+SERVER_IP = '192.168.132.28'  # Replace with the IP address of the Linux laptop
 SERVER_PORT = 12345          # Port to connect to
 
 def start_client():
