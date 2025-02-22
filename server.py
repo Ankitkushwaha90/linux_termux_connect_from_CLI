@@ -4,7 +4,7 @@ import subprocess
 
 # Server configuration
 HOST = '0.0.0.0'  # Listen on all available interfaces
-PORT = 12345       # Port to listen on
+PORT = 12345      # Port to listen on
 
 def start_server():
     # Create a socket object
@@ -20,21 +20,28 @@ def start_server():
         print(f"Connected to client: {client_address}")
 
         with client_socket:
+            # Start an interactive process (e.g., msfconsole)
+            process = subprocess.Popen(
+                ['msfconsole'],  # Replace with any interactive tool
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                shell=True,
+                universal_newlines=True
+            )
+
             while True:
                 # Receive data from the client
                 data = client_socket.recv(1024).decode('utf-8')
                 if not data:
                     break
 
-                print(f"Received command: {data}")
+                # Send the data to the process's stdin
+                process.stdin.write(data)
+                process.stdin.flush()
 
-                # Execute the command on the server
-                try:
-                    output = subprocess.getoutput(data)
-                except Exception as e:
-                    output = str(e)
-
-                # Send the output back to the client
+                # Read the process's stdout and send it back to the client
+                output = process.stdout.read(1024)
                 client_socket.sendall(output.encode('utf-8'))
 
 if __name__ == "__main__":
